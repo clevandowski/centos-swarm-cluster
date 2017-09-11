@@ -34,7 +34,7 @@ if [ -n "$SWARM_MANAGERS" ]; then
     if [ -z "$swarm_user_at_managers" ]; then
       swarm_user_at_managers="$SWARM_USER@$swarm_manager"
     else
-      swarm_user_at_managers="$swarm_user_at_managers SWARM_USER@$swarm_manager"
+      swarm_user_at_managers="$swarm_user_at_managers $SWARM_USER@$swarm_manager"
     fi
   done
 
@@ -53,7 +53,7 @@ if [ -n "$SWARM_WORKERS" ]; then
     if [ -z "$swarm_user_at_workers" ]; then
       swarm_user_at_workers="$SWARM_USER@$swarm_worker"
     else
-      swarm_user_at_workers="$swarm_user_at_workers SWARM_USER@$swarm_worker"
+      swarm_user_at_workers="$swarm_user_at_workers $SWARM_USER@$swarm_worker"
     fi
   done
 
