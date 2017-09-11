@@ -14,13 +14,14 @@ SWARM_MANAGERS=""
 # Les adresses des workers séparées par des espaces
 SWARM_WORKERS=""
 
-# $1 : répertoire où se trouve l'image $RABBITMQ_IMAGE sur le host
-RABBITMQ_IMAGE="rabbitmqClusterPython.tar"
+# $1 : chemin complet où se trouve l'image $RABBITMQ_IMAGE_FILE sur le host
+RABBITMQ_IMAGE_FILE=$(basename $1)
+
 
 if [ -n "$SWARM_LEADER" ]; then
   swarm_user_at_leader="$SWARM_USER@$SWARM_LEADER"
-  scp $1/$RABBITMQ_IMAGE $swarm_user_at_leader:/tmp
-  ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE" -v "$swarm_user_at_leader"
+  scp $1 $swarm_user_at_leader:/tmp
+  ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE_FILE" -v "$swarm_user_at_leader"
 else
   echo "[ERROR] Pas de leader configuré dans SWARM_LEADER"
   exit 1
@@ -34,9 +35,9 @@ if [ -n "$SWARM_MANAGERS" ]; then
     else
       swarm_user_at_managers="$swarm_user_at_managers $SWARM_USER@$swarm_manager"
     fi
-    scp $1/$RABBITMQ_IMAGE $SWARM_USER@$swarm_manager:/tmp
+    scp $1 $SWARM_USER@$swarm_manager:/tmp
   done
-  ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE" -v "$swarm_user_at_managers"
+  ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE_FILE" -v "$swarm_user_at_managers"
 else
   echo "[WARNING] Pas de managers configurés dans SWARM_MANAGERS"
 fi
@@ -49,9 +50,9 @@ if [ -n "$SWARM_WORKERS" ]; then
     else
       swarm_user_at_workers="$swarm_user_at_workers $SWARM_USER@$swarm_worker"
     fi
-    scp $1/$RABBITMQ_IMAGE $SWARM_USER@$swarm_worker:/tmp
+    scp $1 $SWARM_USER@$swarm_worker:/tmp
   done
-  ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE" -v "$swarm_user_at_workers"
+  ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE_FILE" -v "$swarm_user_at_workers"
 else
   echo "[INFO] Pas de workers configurés dans SWARM_WORKERS"
 fi
