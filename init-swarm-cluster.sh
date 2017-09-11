@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker swarm init --advertise-addr &>/dev/null
+docker swarm init --advertise-addr $1 &>/dev/null
 
 token_manager=$(docker swarm join-token manager -q)
 token_worker=$(docker swarm join-token worker -q)
