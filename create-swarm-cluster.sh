@@ -38,7 +38,7 @@ if [ -n "$SWARM_MANAGERS" ]; then
     fi
   done
 
-  ./remoteExec.sh -s join-swarm-cluster.sh -a "$SWARM_LEADER" -v "$swarm_user_at_managers"
+  ./remoteExec.sh -s join-swarm-cluster.sh -a "$token_manager $SWARM_LEADER" -v "$swarm_user_at_managers"
   if [ "$?" != 0 ]; then
     echo "[ERROR] Erreur lors de la jointure des managers"
     exit 1
@@ -57,7 +57,7 @@ if [ -n "$SWARM_WORKERS" ]; then
     fi
   done
 
-  ./remoteExec.sh -s join-swarm-cluster.sh -a "$SWARM_LEADER" -v "$swarm_user_at_workers"
+  ./remoteExec.sh -s join-swarm-cluster.sh -a "$token_worker $SWARM_LEADER" -v "$swarm_user_at_workers"
   if [ "$?" != 0 ]; then
     echo "[ERROR] Erreur lors de la jointure des workers"
     exit 1
