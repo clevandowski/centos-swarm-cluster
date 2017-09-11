@@ -17,8 +17,8 @@ token_worker=""
 if [ -n "$SWARM_LEADER" ]; then
   result=$(./remoteExec.sh -s init-swarm-cluster.sh -a "$SWARM_LEADER" -v "$SWARM_USER@$SWARM_LEADER")
   if [ "$?" == 0 ]; then
-    token_manager=$(echo result | cut -d' ' -f1)
-    token_worker=$(echo result | cut -d' ' -f2)
+    token_manager=$(echo $result | cut -d' ' -f1)
+    token_worker=$(echo $result | cut -d' ' -f2)
   else
     echo "[ERROR] Erreur lors de l'initialisation du cluster"
     exit 1
