@@ -142,6 +142,10 @@ function remote_exec {
     if [ "$USE_TTY" = "true" ]; then
       SSH_OPTIONS="$SSH_OPTIONS -tt"
     fi
+
+    if [ "$SUDO_MODE" = "true" ]; then
+      REMOTE_COMMAND="sudo $REMOTE_COMMAND"
+    fi
  
     if [ "$QUIET" = "true" ]; then
       ssh $SSH_OPTIONS $USER_AT_HOST $REMOTE_COMMAND < "$SCRIPT" 1>/dev/null 2>/dev/null &
