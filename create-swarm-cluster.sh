@@ -12,8 +12,9 @@ SWARM_MANAGERS="192.168.77.22 192.168.77.23"
 # Les adresses des workers séparées par des espaces
 SWARM_WORKERS="192.168.77.24"
 
-RABBITMQ_INSTANCE1_AUTHORIZED_LOCATIONS="node1,node3,node4"
-RABBITMQ_INSTANCE2_AUTHORIZED_LOCATIONS="node2,node3,node4"
+# Pour chaque instance du cluster RabbitMQ (séparée par |), on indique une liste (séparée par ,) de noeuds (au sens Swarm) où l'instance peut se déployer
+# On peut donc ajouter autant d'instance de RabbitMQ que nécessaire
+RABBITMQ_INSTANCE_AUTHORIZED_LOCATIONS="node1,node3,node4\|node2,node3,node4"
 
 token_manager=""
 token_worker=""
@@ -70,5 +71,4 @@ else
 fi
 
 # Ajout des labels
-./remoteExec.sh -s add-placement-constraint-label.sh -a "$RABBITMQ_INSTANCE1_AUTHORIZED_LOCATIONS $RABBITMQ_INSTANCE2_AUTHORIZED_LOCATIONS" -v "$SWARM_USER@$SWARM_LEADER"
-
+./remoteExec.sh -s add-placement-constraint-label.sh -a "$RABBITMQ_INSTANCE_AUTHORIZED_LOCATIONS" -v "$SWARM_USER@$SWARM_LEADER"
