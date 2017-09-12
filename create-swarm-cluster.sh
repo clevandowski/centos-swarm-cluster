@@ -1,16 +1,19 @@
 #!/bin/bash
 
 # User leader/managers/workers
-SWARM_USER="adminprod"
+SWARM_USER="vagrant"
 
 # L'adresse du leader
-SWARM_LEADER="172.25.252.225"
+SWARM_LEADER="192.168.77.21"
 
 # Les adresses des managers séparées par des espaces
-SWARM_MANAGERS="172.25.254.88 172.25.254.89"
+SWARM_MANAGERS="192.168.77.22 192.168.77.23"
 
 # Les adresses des workers séparées par des espaces
-SWARM_WORKERS="172.25.254.90"
+SWARM_WORKERS="192.168.77.24"
+
+RABBITMQ_INSTANCE1_AUTHORIZED_LOCATIONS="node1,node3,node4"
+RABBITMQ_INSTANCE2_AUTHORIZED_LOCATIONS="node2,node3,node4"
 
 token_manager=""
 token_worker=""
@@ -65,3 +68,7 @@ if [ -n "$SWARM_WORKERS" ]; then
 else
   echo "[INFO] Pas de workers configurés dans SWARM_WORKERS"
 fi
+
+# Ajout des labels
+./remoteExec.sh -s add-placement-constraint-label.sh -a "$RABBITMQ_INSTANCE1_AUTHORIZED_LOCATIONS $RABBITMQ_INSTANCE2_AUTHORIZED_LOCATIONS" -v "$SWARM_USER@$SWARM_LEADER"
+
