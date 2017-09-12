@@ -1,0 +1,117 @@
+version: '3'
+networks:
+  private:
+    driver: overlay
+services:
+  test1:
+    image:  bijukunjummen/rabbitmq-server:3.6.10
+    networks:
+      - private
+    hostname: test1
+    environment:
+      - ERLANG_COOKIE=abcdefg    
+      - RABBITMQ_LOG_BASE=/var/log/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "4369:4369"
+    volumes:
+      - ${RABBITMQ_HOME}/rabbit_config:/home
+      - ${RABBITMQ_HOME}/volume/mnesia:/var/lib/rabbitmq/mnesia
+      - ${RABBITMQ_HOME}/volume/log:/var/log/rabbitmq
+      - ${RABBITMQ_HOME}/volume/pluginsConfig:/etc/rabbitmq
+    deploy:
+      placement:
+        constraints:
+          - node.labels.nametest == machine1
+      resources:
+        limits:
+          cpus: '0.000'
+          memory: 200M
+        reservations:
+          cpus: '0.000'
+          memory: 100M
+  test2:
+    image:  bijukunjummen/rabbitmq-server:3.6.10
+    networks:
+      - private
+    depends_on:
+      - test1
+    hostname: test2
+    environment:
+      - ERLANG_COOKIE=abcdefg
+      - CLUSTER_WITH=test1
+      - CLUSTERED=true
+      - RAM_NODE=true
+      - RABBITMQ_LOG_BASE=/var/log/rabbitmq
+    ports:
+      - "5783:5672"
+      - "15673:15672"
+      - "4370:4369"   
+    volumes:
+      - ${RABBITMQ_HOME}/rabbit_config:/home
+      - ${RABBITMQ_HOME}/volume/mnesia:/var/lib/rabbitmq/mnesia
+      - ${RABBITMQ_HOME}/volume/log:/var/log/rabbitmq
+      - ${RABBITMQ_HOME}/volume/pluginsConfig:/etc/rabbitmq/
+    deploy:
+      placement:
+        constraints:
+          - node.labels.nametest == machine2
+    command: /home/wait-for-it.sh test1:4369 -t 120 -- /opt/rabbit/startrabbit.sh
+
+  test3:
+    image:  bijukunjummen/rabbitmq-server:3.6.10
+    networks:
+      - private
+    depends_on:
+      - test1
+    hostname: test3
+    environment:
+      - ERLANG_COOKIE=abcdefg
+      - CLUSTER_WITH=test1
+      - CLUSTERED=true
+      - RAM_NODE=true
+      - RABBITMQ_LOG_BASE=/var/log/rabbitmq
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+      - "4371:4369"
+    volumes:
+      - ${RABBITMQ_HOME}/rabbit_config:/home
+      - ${RABBITMQ_HOME}/volume/mnesia:/var/lib/rabbitmq/mnesia
+      - ${RABBITMQ_HOME}/volume/log:/var/log/rabbitmq
+      - ${RABBITMQ_HOME}/volume/pluginsConfig:/etc/rabbitmq/
+    deploy:
+      placement:
+        constraints:
+          - node.labels.nametest == machine3
+    command: /home/wait-for-it.sh test1:4369 -t 120 -- /opt/rabbit/startrabbit.sh
+
+  test4:
+    image:  bijukunjummen/rabbitmq-server:3.6.10
+    networks:
+      - private
+    depends_on:
+      - test1
+    hostname: test4
+    environment:
+      - ERLANG_COOKIE=abcdefg
+      - CLUSTER_WITH=test1
+      - CLUSTERED=true
+      - RAM_NODE=true
+      - RABBITMQ_LOG_BASE=/var/log/rabbitmq
+    ports:
+      - "5675:5672"
+      - "15675:15672"
+      - "4372:4369"
+    volumes:
+      - ${RABBITMQ_HOME}/rabbit_config:/home
+      - ${RABBITMQ_HOME}/volume/mnesia:/var/lib/rabbitmq/mnesia
+      - ${RABBITMQ_HOME}/volume/log:/var/log/rabbitmq
+      - ${RABBITMQ_HOME}/volume/pluginsConfig:/etc/rabbitmq/
+    deploy:
+      placement:
+        constraints:
+          - node.labels.nametest == machine4
+    command: /home/wait-for-it.sh test1:4369 -t 120 -- /opt/rabbit/startrabbit.sh
+  
