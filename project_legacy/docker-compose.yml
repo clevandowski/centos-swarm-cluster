@@ -1,0 +1,53 @@
+
+version: '3'
+networks:
+  private:
+    driver: overlay
+services:
+  node1:
+    image:  bijukunjummen/rabbitmq-server:3.6.10
+    networks:
+      - private
+    hostname: node1
+    environment:
+      - ERLANG_COOKIE=abcdefg    
+      - RABBITMQ_LOG_BASE=/var/log/rabbitmq
+    ports:
+      - "5682:5672"
+      - "15682:15672"
+      - "4379:4369"
+    volumes:
+      - ./rabbit_config:/home
+      - ./volume/pluginsConfig:/etc/rabbitmq
+      - ./volume/mnesiaNode1:/var/lib/rabbitmq/mnesia
+    deploy:
+      placement:
+        constraints:
+          - node.labels.node1 == node1
+      
+  node2:
+    image:  bijukunjummen/rabbitmq-server:3.6.10
+    networks:
+      - private
+    depends_on:
+      - node1
+    hostname: node2
+    environment:
+      - ERLANG_COOKIE=abcdefg
+      - CLUSTER_WITH=node1
+      - CLUSTERED=true
+      - RAM_NODE=true
+      - RABBITMQ_LOG_BASE=/var/log/rabbitmq
+    ports:
+      - "5784:5672"
+      - "15675:15672"
+      - "4376:4369"   
+    volumes:
+      - /home/adminprod/MessageQueuing/rabbit_config:/home
+      - /home/adminprod/MessageQueuing/volume/pluginsConfig:/etc/rabbitmq
+      - /home/adminprod/MessageQueuing/volume/mnesiaNode2:/var/lib/rabbitmq/mnesia      
+    deploy:
+      placement:
+        constraints:
+          - node.labels.node2 == node2
+    command: /home/wait-for-it.sh node1:4369 -t 120 -- /opt/rabbit/startrabbit.sh
