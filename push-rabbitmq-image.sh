@@ -2,29 +2,31 @@
 
 #!/bin/bash
 
+#!/bin/bash
+
 # User leader/managers/workers
-SWARM_USER=""
+SWARM_USER="adminprod"
 
 # L'adresse du leader
-SWARM_LEADER=""
+SWARM_LEADER="172.25.252.225"
 
-# Les adresses des managers séparées par des espaces
-SWARM_MANAGERS=""
+# Les adresses des managers sÃ©parÃ©es par des espaces
+SWARM_MANAGERS="172.25.254.88 172.25.254.89"
 
-# Les adresses des workers séparées par des espaces
-SWARM_WORKERS=""
+# Les adresses des workers sÃ©parÃ©es par des espaces
+SWARM_WORKERS="172.25.254.90"
 
 # Chemin complet où se trouve l'image $RABBITMQ_IMAGE_FILE sur le host
-RABBITMQ_IMAGE_PATH=""
+RABBITMQ_IMAGE_PATH="../rabbitmqClusterPython.tar"
 
 # Chemin complet du répertoire rabbit_config
-RABBITMQ_CONFIG_DIRECTORY=""
+RABBITMQ_CONFIG_DIRECTORY="/home/adminprod/CMQ_V2/devOpsRemoteExec/rabbit_config/"
 
 # Répertoire rabbitmq_config_server
-RABBITMQ_CONFIG_SERVER_DIRECTORY=""
+RABBITMQ_CONFIG_SERVER_DIRECTORY="/home/adminprod/CMQ_V2/devOpsRemoteExec/volume/"
 
 # Chemin où sont copiées les configurations dans les noeuds
-NODE_CONFIGURATION_DIRECTORY=""
+NODE_CONFIGURATION_DIRECTORY="/home/adminprod/"
 
 RABBITMQ_IMAGE_FILE=$(basename $RABBITMQ_IMAGE_PATH)
 
@@ -33,9 +35,9 @@ if [ -n "$SWARM_LEADER" ]; then
   # Image docker
   scp $RABBITMQ_IMAGE_PATH $swarm_user_at_leader:/tmp
   # rabbit_config
-  scp $RABBITMQ_CONFIG_DIRECTORY $swarm_user_at_leader:$NODE_CONFIGURATION_DIRECTORY
+  scp -rp $RABBITMQ_CONFIG_DIRECTORY $swarm_user_at_leader:$NODE_CONFIGURATION_DIRECTORY
   # rabbit_config_server
-  scp $RABBITMQ_CONFIG_SERVER_DIRECTORY $swarm_user_at_leader:$NODE_CONFIGURATION_DIRECTORY
+  scp -rp $RABBITMQ_CONFIG_SERVER_DIRECTORY $swarm_user_at_leader:$NODE_CONFIGURATION_DIRECTORY
   ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE_FILE" -v "$swarm_user_at_leader"
 else
   echo "[ERROR] Pas de leader configuré dans SWARM_LEADER"
@@ -52,9 +54,9 @@ if [ -n "$SWARM_MANAGERS" ]; then
     fi
     scp $RABBITMQ_IMAGE_PATH $SWARM_USER@$swarm_manager:/tmp
     # rabbit_config
-    scp $RABBITMQ_CONFIG_DIRECTORY $SWARM_USER@$swarm_manager:$NODE_CONFIGURATION_DIRECTORY
+    scp -rp $RABBITMQ_CONFIG_DIRECTORY $SWARM_USER@$swarm_manager:$NODE_CONFIGURATION_DIRECTORY
     # rabbit_config_server
-    scp $RABBITMQ_CONFIG_SERVER_DIRECTORY $SWARM_USER@$swarm_manager:$NODE_CONFIGURATION_DIRECTORY
+    scp -rp $RABBITMQ_CONFIG_SERVER_DIRECTORY $SWARM_USER@$swarm_manager:$NODE_CONFIGURATION_DIRECTORY
   done
   ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE_FILE" -v "$swarm_user_at_managers"
 else
@@ -71,9 +73,9 @@ if [ -n "$SWARM_WORKERS" ]; then
     fi
     scp $RABBITMQ_IMAGE_PATH $SWARM_USER@$swarm_worker:/tmp
     # rabbit_config
-    scp $RABBITMQ_CONFIG_DIRECTORY $SWARM_USER@$swarm_worker:$NODE_CONFIGURATION_DIRECTORY
+    scp -rp $RABBITMQ_CONFIG_DIRECTORY $SWARM_USER@$swarm_worker:$NODE_CONFIGURATION_DIRECTORY
     # rabbit_config_server
-    scp $RABBITMQ_CONFIG_SERVER_DIRECTORY $SWARM_USER@$swarm_worker:$NODE_CONFIGURATION_DIRECTORY
+    scp -rp $RABBITMQ_CONFIG_SERVER_DIRECTORY $SWARM_USER@$swarm_worker:$NODE_CONFIGURATION_DIRECTORY
   done
   ./remoteExec.sh -s "docker-load-rabbitmq-image.sh" -a "/tmp/$RABBITMQ_IMAGE_FILE" -v "$swarm_user_at_workers"
 else

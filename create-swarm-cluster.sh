@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # User leader/managers/workers
-SWARM_USER=""
+SWARM_USER="adminprod"
 
 # L'adresse du leader
-SWARM_LEADER=""
+SWARM_LEADER="172.25.252.225"
 
 # Les adresses des managers séparées par des espaces
-SWARM_MANAGERS=""
+SWARM_MANAGERS="172.25.254.88 172.25.254.89"
 
 # Les adresses des workers séparées par des espaces
-SWARM_WORKERS=""
+SWARM_WORKERS="172.25.254.90"
 
 token_manager=""
 token_worker=""
