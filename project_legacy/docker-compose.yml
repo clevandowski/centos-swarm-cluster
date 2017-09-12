@@ -24,7 +24,7 @@ services:
       placement:
         constraints:
           - node.labels.node1 == node1
-    command: start-and-config-rmq.sh
+    command: [sh, -c, "/home/start-rabbit.sh && /home/configRabbitMQServer.sh && /opt/rabbit/startrabbit.sh"]
       
   node2:
     image:  bijukunjummen/rabbitmq-server:3.6.10
