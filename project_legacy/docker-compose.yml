@@ -24,6 +24,8 @@ services:
       placement:
         constraints:
           - node.labels.node1 == node1
+    # On lance deux fois le serveur rabbit, une fois en background et une deuxième fois pour garder le process en forground
+    # sinon, dès que le process en background se termine, le container docker s'arrête
     command: [sh, -c, "/home/start-rabbit.sh && /home/configRabbitMQServer.sh && /opt/rabbit/startrabbit.sh"]
       
   node2:
